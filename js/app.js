@@ -105,7 +105,7 @@ function analyser() {
   const a24=has24h?readCol('24h','a'):null;
   const repMax0=(()=>{const v=r0.filter(x=>x!==null);return v.length?Math.max(...v.map(Math.abs)):null;})();
   const dlt0=dlt(m0), X0=avg(m0), dvh0=dvh(m0);
-  const DX_m=(X0!==null&&avg(m24)!==null)?X0-avg(m24):null;
+  const DX_m=(X0!==null&&m24!==null&&avg(m24)!==null)?X0-avg(m24):null;
   const ampMax0=(()=>{const v=a0.filter(x=>x!==null);return v.length?Math.max(...v):null;})();
   const ampMin24=has24h?(()=>{const v=a24.filter(x=>x!==null);return v.length?Math.min(...v):null;})():null;
   const issues=[];
