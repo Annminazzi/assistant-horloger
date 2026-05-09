@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistant Horloger</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ── SIDEBAR PARAMÈTRES ──────────────────────────────────────────────── -->
+<div id="sidebar">
+  <div class="sb-head">
+    <span class="sb-title">Paramètres</span>
+    <button class="icon-btn" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sb-body">
+    <span class="param-lbl">Tolérances</span>
+    <div class="param-row"><span>Repère max (ms)</span><input class="param-inp" type="number" id="tol-rep" value="0.6" step="0.1"></div>
+    <div class="param-row"><span>Delta max (s/j)</span><input class="param-inp" type="number" id="tol-delta" value="12" step="1"></div>
+    <div class="param-row"><span>Marche min (s/j)</span><input class="param-inp" type="number" id="tol-mmin" value="-5" step="1"></div>
+    <div class="param-row"><span>Marche max (s/j)</span><input class="param-inp" type="number" id="tol-mmax" value="15" step="1"></div>
+    <div class="sb-div"></div>
+    <div class="param-row"><span>Amplitude 0h max (°)</span><input class="param-inp" type="number" id="tol-a0" value="320" step="5"></div>
+    <div class="param-row"><span>Amplitude 24h min (°)</span><input class="param-inp" type="number" id="tol-a24" value="210" step="5"></div>
+    <div class="sb-div"></div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6;font-family:var(--serif)">Les tolérances s'appliquent à l'analyse suivante.</div>
+  </div>
+</div>
+
+<!-- ── MODAL GLOSSAIRE ─────────────────────────────────────────────────── -->
+<div id="glos-modal">
+  <div class="glos-bg" onclick="closeGlos()"></div>
+  <div class="glos-box">
+    <div class="glos-head">
+      <span class="glos-title">Glossaire Horloger</span>
+      <button class="icon-btn" onclick="closeGlos()">✕</button>
+    </div>
+    <div class="glos-body">
+      <div class="g-item"><span class="g-term">X</span><span class="g-def">Marche moyenne — moyenne arithmétique des marches sur l'ensemble des positions.</span></div>
+      <div class="g-item"><span class="g-term">Δ</span><span class="g-def">Delta de marche — écart entre la position de marche la plus haute (Pmax) et la plus basse (Pmin).</span></div>
+      <div class="g-item"><span class="g-term">DVH</span><span class="g-def">Différence entre positions verticales et horizontales — déséquilibre entre ces deux groupes.</span></div>
+      <div class="g-item"><span class="g-term">DX</span><span class="g-def">Différence entre la moyenne du ticket 0H et la moyenne du ticket 24H — calculée sur l'amplitude, la marche et le repère.</span></div>
+      <div class="g-item"><span class="g-term">Pmax</span><span class="g-def">Position de plus haute amplitude.</span></div>
+      <div class="g-item"><span class="g-term">Pmin</span><span class="g-def">Position de plus basse amplitude.</span></div>
+      <div class="g-item"><span class="g-term">XV</span><span class="g-def">Moyenne des positions verticales (VB, VG, VH, VD).</span></div>
+      <div class="g-item"><span class="g-term">XH</span><span class="g-def">Moyenne des positions horizontales (HH, HB).</span></div>
+      <div class="g-item"><span class="g-term">DVBh</span><span class="g-def">Différence absolue entre l'amplitude en VB et VH — déséquilibre axial.</span></div>
+      <div class="g-item"><span class="g-term">DVgd</span><span class="g-def">Différence absolue entre l'amplitude en VG et VD — déséquilibre latéral.</span></div>
+      <div class="g-item"><span class="g-term">Di</span><span class="g-def">Différence absolue entre VG et HB.</span></div>
+      <div class="g-item"><span class="g-term">Imax</span><span class="g-def">Différence maximale entre la même position au ticket 0H et au ticket 24H.</span></div>
+      <div class="g-div"></div>
+      <div class="g-item"><span class="g-term">Rebat</span><span class="g-def">Phénomène où la cheville de plateau touche deux fois la palette à chaque oscillation. Amplitude excessive (&gt; 320°).</span></div>
+      <div class="g-item"><span class="g-term">Décottage</span><span class="g-def">Nettoyage et dégraissage du mouvement — nécessaire lorsque l'amplitude 24h est trop faible.</span></div>
+      <div class="g-item"><span class="g-term">Raquette</span><span class="g-def">Pièce permettant d'ajuster la longueur active du spiral et donc la marche.</span></div>
+      <div class="g-item"><span class="g-term">Spiral</span><span class="g-def">Ressort hélicoïdal fixé au balancier dont les oscillations régulent la marche.</span></div>
+      <div class="g-item"><span class="g-term">Repère</span><span class="g-def">Valeur en ms du décalage entre les deux demi-oscillations. Plus proche de 0 = réglage plus précis.</span></div>
+    </div>
+    <div class="glos-foot">
+      <!-- Remplacez # par votre URL -->
+      <a class="glos-link" href="#" target="_blank">📎 Accéder au document de formation →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ────────────────────────────────────────────────────────────── -->
+<div class="main">
+
+  <header class="header">
+    <span class="fleur fleur-l">⚜</span>
+    <span class="fleur fleur-r">⚜</span>
+    <div class="orn">
+      <div class="orn-line"></div>
+      <div class="orn-dots"><div class="orn-dot"></div><div class="orn-dot"></div><div class="orn-dot"></div></div>
+      <div class="orn-line rev"></div>
+    </div>
+    <h1>Assistant <span class="h1-i">Horloger</span></h1>
+    <p class="subtitle">Outil de Réglage Professionnel</p>
+    <div class="top-btns">
+      <button class="btn-top" onclick="openGlos()">◆ Glossaire</button>
+      <button class="btn-top" onclick="openSidebar()">⚙ Paramètres</button>
+    </div>
+  </header>
+
+  <div class="sec-div"><div class="sec-line"></div><span class="sec-txt">Type de Balancier</span><div class="sec-line"></div></div>
+  <div class="bal-row">
+    <button class="bal-btn active" id="btn-raq" onclick="setBal('raquetterie')"><span class="dot"></span> Raquetterie</button>
+    <button class="bal-btn" id="btn-iv" onclick="setBal('inertie')"><span class="dot"></span> Inertie Variable</button>
+  </div>
+
+  <div class="sec-div"><div class="sec-line"></div><span class="sec-txt">Saisie des Tickets</span><div class="sec-line"></div></div>
+
+  <!-- TICKET 0H -->
+  <div class="t-card">
+    <div class="t-head">
+      <div class="t-head-l"><span class="t-diam">◆</span><span class="t-name">Ticket 0H</span></div>
+      <label class="toggle-wrap" onclick="toggle24()">
+        <div class="tog" id="tog24"></div><span>Ticket 24H</span>
+      </label>
+    </div>
+    <table class="t-tbl">
+      <thead><tr><th>Pos.</th><th>Amplitude °</th><th>Marche s/j</th><th>Repère ms</th></tr></thead>
+      <tbody id="rows-0h"></tbody>
+    </table>
+    <div class="recap-sec">
+      <div class="recap-lbl">—— Récap ——</div>
+      <table class="r-tbl"><tbody id="recap-0h"></tbody></table>
+    </div>
+  </div>
+
+  <!-- TICKET 24H -->
+  <div id="t24-wrap">
+    <div class="t-card">
+      <div class="t-head">
+        <div class="t-head-l"><span class="t-diam">◆</span><span class="t-name">Ticket 24H</span></div>
+      </div>
+      <table class="t-tbl">
+        <thead><tr><th>Pos.</th><th>Amplitude °</th><th>Marche s/j</th><th>Repère ms</th></tr></thead>
+        <tbody id="rows-24h"></tbody>
+      </table>
+      <div class="recap-sec">
+        <div class="recap-lbl">—— Récap ——</div>
+        <table class="r-tbl"><tbody id="recap-24h"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="analyze-wrap">
+    <button class="btn-analyze" onclick="analyser()">◆ &nbsp; Analyser le Réglage &nbsp; ◆</button>
+    <br>
+    <button class="btn-reset" onclick="resetAll()">↺ Réinitialiser</button>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
